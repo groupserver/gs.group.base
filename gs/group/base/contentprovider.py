@@ -38,7 +38,7 @@ class GroupContentProvider(object):
         #   much of an issue.)
         #
         # TODO: Figure out I could do this better.
-        if self.__viewTopics:
+        if self.__viewTopics == None:
             msgs = self.context.messages
             user = getSecurityManager().getUser()
             self.__viewTopics = bool(user.has_permission('View', msgs))
