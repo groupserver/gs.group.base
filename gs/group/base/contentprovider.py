@@ -9,12 +9,12 @@ class GroupContentProvider(object):
 
         self.context = group
         self.request = request
-        self.__updated = False
 
         self.__siteInfo = None
         self.__groupInfo = None
         self.__viewTopics = None
 
+    #TODO Use the zope.cachedescriptors.properties.Lazy decoration
     @property
     def siteInfo(self):
         if self.__siteInfo == None:
@@ -22,6 +22,7 @@ class GroupContentProvider(object):
                 createObject('groupserver.SiteInfo', self.context)
         return self.__siteInfo
         
+    #TODO Use the zope.cachedescriptors.properties.Lazy decoration
     @property
     def groupInfo(self):
         if self.__groupInfo == None:
@@ -29,6 +30,7 @@ class GroupContentProvider(object):
                 createObject('groupserver.GroupInfo', self.context)
         return self.__groupInfo
         
+    #TODO Use the zope.cachedescriptors.properties.Lazy decoration
     @property
     def viewTopics(self):
         # --=mpj17=-- If the user can view the messages the he or she
