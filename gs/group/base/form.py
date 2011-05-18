@@ -6,7 +6,8 @@ class GroupForm(SiteForm):
     def __init__(self, context, request):
         SiteForm.__init__(self, context, request)
         self.__groupInfo = None
-    
+
+    #TODO Use the zope.cachedescriptors.properties.Lazy decoration
     @property
     def groupInfo(self):
         if self.__groupInfo == None:
