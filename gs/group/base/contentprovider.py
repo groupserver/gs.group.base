@@ -1,4 +1,5 @@
 # coding=utf-8
+from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from AccessControl import getSecurityManager
 
@@ -6,32 +7,20 @@ class GroupContentProvider(object):
     def __init__(self, group, request, view):
         self.__parent__ = self.view = view
         self.__updated = False
-
         self.context = group
         self.request = request
 
-        self.__siteInfo = None
-        self.__groupInfo = None
-        self.__viewTopics = None
-
-    #TODO Use the zope.cachedescriptors.properties.Lazy decoration
-    @property
+    @Lazy
     def siteInfo(self):
-        if self.__siteInfo == None:
-            self.__siteInfo = \
-                createObject('groupserver.SiteInfo', self.context)
-        return self.__siteInfo
+        retval = createObject('groupserver.SiteInfo', self.context)
+        return retval
         
-    #TODO Use the zope.cachedescriptors.properties.Lazy decoration
-    @property
+    @Lazy
     def groupInfo(self):
-        if self.__groupInfo == None:
-            self.__groupInfo = \
-                createObject('groupserver.GroupInfo', self.context)
-        return self.__groupInfo
+        retval = createObject('groupserver.GroupInfo', self.context)
+        return retval
         
-    #TODO Use the zope.cachedescriptors.properties.Lazy decoration
-    @property
+    @Lazy
     def viewTopics(self):
         # --=mpj17=-- If the user can view the messages the he or she
         #   can view almost all of the sub-pages. This is *mostly* used
@@ -40,9 +29,18 @@ class GroupContentProvider(object):
         #   much of an issue.)
         #
         # TODO: Figure out I could do this better.
-        if self.__viewTopics == None:
-            msgs = self.context.messages
-            user = getSecurityManager().getUser()
-            self.__viewTopics = bool(user.has_permission('View', msgs))
-        return self.__viewTopics
+        msgs = self.context.messages
+        user = getSecurityManager().getUser()
+        retval = bool(user.has_permission('View', msgs))
+        return retval
+
+    @Lazy
+    def loggedInUser(self):
+        retval = createObject('groupserver.LoggedInUser', self.context)
+        return retval
+
+    @Lazy
+    def isAnnouncement(self):
+        template = self.groupInfo.get_property('group_template')
+        return template == 'announcement'
 
