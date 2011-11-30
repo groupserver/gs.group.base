@@ -2,19 +2,14 @@
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from AccessControl import getSecurityManager
+from gs.viewlet.contentprovider import SiteContentProvider
 
-class GroupContentProvider(object):
+class GroupContentProvider(SiteContentProvider):
     def __init__(self, group, request, view):
-        self.__parent__ = self.view = view
+        SiteContentProvider.__init__(self, group, request, view)
+        self.__parent__ = view
         self.__updated = False
-        self.context = group
-        self.request = request
 
-    @Lazy
-    def siteInfo(self):
-        retval = createObject('groupserver.SiteInfo', self.context)
-        return retval
-        
     @Lazy
     def groupInfo(self):
         retval = createObject('groupserver.GroupInfo', self.context)
@@ -32,11 +27,6 @@ class GroupContentProvider(object):
         msgs = self.context.messages
         user = getSecurityManager().getUser()
         retval = bool(user.has_permission('View', msgs))
-        return retval
-
-    @Lazy
-    def loggedInUser(self):
-        retval = createObject('groupserver.LoggedInUser', self.context)
         return retval
 
     @Lazy
