@@ -4,6 +4,9 @@
   xmlns:five="http://namespaces.zope.org/five"
   i18n_domain="groupserver">
 
+  <interface interface=".interfaces.IGSGroupMarker"
+    type="zope.app.content.interfaces.IContentType" />
+    
   <class class=".page.GroupPage">
     <implements interface=".interfaces.IGSGroupPage"/>
   </class>
