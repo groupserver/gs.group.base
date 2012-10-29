@@ -4,9 +4,10 @@ from zope.component import createObject
 from AccessControl import getSecurityManager
 from gs.viewlet.contentprovider import SiteContentProvider
 
+
 class GroupContentProvider(SiteContentProvider):
     def __init__(self, group, request, view):
-        SiteContentProvider.__init__(self, group, request, view)
+        super(GroupContentProvider, self).__init__(group, request, view)
         self.__parent__ = view
         self.__updated = False
 
@@ -14,7 +15,7 @@ class GroupContentProvider(SiteContentProvider):
     def groupInfo(self):
         retval = createObject('groupserver.GroupInfo', self.context)
         return retval
-        
+
     @Lazy
     def viewTopics(self):
         # --=mpj17=-- If the user can view the messages the he or she
@@ -31,6 +32,7 @@ class GroupContentProvider(SiteContentProvider):
 
     @Lazy
     def isAnnouncement(self):
+        # FIXME: Find anything that uses this property and make it use
+        # gs.group.type.announcement
         template = self.groupInfo.get_property('group_template')
         return template == 'announcement'
-
