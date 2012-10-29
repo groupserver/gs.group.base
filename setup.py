@@ -27,16 +27,23 @@ setup(name='gs.group.base',
     url='http://groupserver.org',
     license='ZPL',
     packages=find_packages(exclude=['ez_setup']),
-    namespace_packages=['gs', 'gs.group',],
+    namespace_packages=['gs', 'gs.group', ],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
         'setuptools',
+        'zope.cachedescriptors',
+        'zope.component',
+        'zope.interface',
+        'zope.schema',
+        'AccessControl',
+        'gs.content.base',
         'gs.content.form',
+        'gs.viewlet',
+        'Products.XWFChat',
         # -*- Extra requirements: -*-
     ],
     entry_points="""
     # -*- Entry points: -*-
     """,
 )
-
