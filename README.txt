@@ -1,55 +1,112 @@
-.. sectnum::
-
-============
 Introduction
 ============
 
-The code that defines the core of GroupServer groups. Its primary job
-is to define a `GroupPage`_, `GroupForm`_ and `GroupContentProvider`_.
+The code that defines the core of GroupServer_ groups. It defines the core
+`marker interface`_ for a group, and the `base classes`_ for the pages that
+make up a group.
+
+Marker Interface
+================
+
+A folder is considered a group if it has the ``IGSGroupMarker`` marker
+interface. For historical reasons this marker interface has the following
+inheritance tree::
+
+  Products.XWFChat.interfaces.IGSGroupFolder
+      △
+      │
+  gs.group.base.interfaces.IGSGroupMarker
+
+In the future the inheritance from ``IGSGroupFolder`` will be removed.
+
+Base Classes
+============
+
+For base classes are provided: `GroupPage`_, `GroupForm`_,
+`GroupContentProvider`_, and `GroupViewlet`_.
 
 ``GroupPage``
-=============
+-------------
 
-The ``gs.group.base.page.GroupPage`` class is a ``BrowserView`` that
-defines a ``siteInfo`` and ``groupInfo`` property. It can be used in
-a ZCML page declaration as-is::
+The ``gs.group.base.GroupPage`` class is a ``BrowserView`` that defines a
+``siteInfo`` and ``groupInfo`` property [#page]_. It can be used in a ZCML
+page declaration as-is::
 
-    <browser:page 
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+  <browser:page 
+    for="gs.group.base.interfaces.IGSGroupMarker"
     name="index.html"
     class="gs.group.base.page.GroupPage"
     template="browser/templates/homepage.pt"
     permission="zope2.View"/>
 
 ``GroupForm``
-=============
+-------------
 
-The ``gs.group.base.form.GroupForm`` *abstract base class* is a
-``PageForm`` that defines a ``siteInfo`` and ``groupInfo`` property. It
-cannot be used as-is, unlike the ``GroupPage``. Instead, forms within a
-group subclass ``GroupForm`` and define
+The ``gs.group.base.GroupForm`` *abstract base class* that defines a
+``siteInfo`` and ``groupInfo`` property [#form]_. It cannot be used as-is,
+unlike the ``GroupPage``. Instead, forms within a group subclass
+``GroupForm`` and define
 
 * ``form_fields``
 * ``label``, and
 * ``template``.
 
-``GroupContentProvider``
-========================
+For example::
 
-The ``gs.group.base.contentprovider.GroupContentProvider`` is a content
-provider that defines a ``siteInfo`` and ``groupInfo`` property. It can
-be used as is, or as the base of a viewlet.
+  from zope.formlib import form
+  from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+  from gs.group.base import GroupForm
+
+  class GroupAdminForm(GroupForm):
+      form_fields = form.Fields(IGroupAdminForm)
+      label = u'A Group Admin Form Example'
+      pageTemplateFileName = 'browser/templates/adminform.pt'
+      template = ZopeTwoPageTemplateFile(pageTemplateFileName)
+
+      def __init__(self, group, request):
+          super(GroupAdminForm, self).__init__(group, request)
+
+``GroupContentProvider``
+------------------------
+
+The ``gs.group.base.GroupContentProvider`` is a content provider that
+defines a ``siteInfo`` and ``groupInfo`` property. It can be used as is, or
+as the base of a viewlet.
+
+``GroupViewlet``
+----------------
+
+The ``gs.group.base.GroupViewlet`` is a concrete class that defines a
+``siteInfo`` and ``groupInfo`` property, inheriting them off the
+`GroupContentProvider`_. It can be used in a ZCML viewlet_ declaration
+as-is::
+
+  <browser:viewlet 
+    name="a-viewlet-name"
+    for="gs.group.base.interface.IGSGroupMarker"
+    manager="some.manager"
+    template="browser/templates/a-viewlet-template.pt"
+    class="gs.group.base.GroupViewlet"
+    permission="zope.Public" />
 
 TODO
 ====
 
-* The marker interface for groups will be moved into this module
-  [#Marker]_.
-  
-* The GroupInfo class should be moved into this module.
+The ``GroupInfo`` class should be moved into this egg from
+``Products.GSGroup``.
 
-.. [#Marker] For historic reasons the ``IGSGroupFolder`` marker, which 
-   is used to indicate that a group is a group, is in
-   ``Products.XWFChat``. What we need to do is `move IGSGroupFolder
-   <https://projects.iopen.net/groupserver/ticket/419>`_
+Resources
+=========
 
+- Code repository: https://source.iopen.net/groupserver/gs.group.base
+- Questions and comments to http://groupserver.org/groups/development
+- Report bugs at https://redmine.iopen.net/projects/groupserver
+
+.. [#page] The ``GroupPage`` inherits most of its functionality from
+           ``gs.content.base.page.SitePage``:
+           <https://source.iopen.net/groupserver/gs.content.base/summary>
+.. [#form] The ``GroupForm`` inherits most of its functionality from
+           ``gs.content.form.SiteForm``:
+           <https://source.iopen.net/groupserver/gs.content.form/summary>
+.. _GroupServer: http://groupserver.org
+.. _viewlet: http://docs.zope.org/zope.viewlet/
