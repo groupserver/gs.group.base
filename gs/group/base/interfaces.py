@@ -3,9 +3,11 @@ from zope.interface import Interface
 from zope.schema import Field
 from Products.XWFChat.interfaces import IGSGroupFolder
 
+
 class IGSGroupMarker(IGSGroupFolder):
     u'''The base marker-interface for groups.'''
     pass
+
 
 # TODO: Create a field type for siteInfo and groupInfo instances.
 class IGSGroupPage(Interface):
@@ -16,4 +18,3 @@ class IGSGroupPage(Interface):
     groupInfo = Field(title=u'Group Information',
         description=u'A GroupInfo instance.',
         required=True)
-
