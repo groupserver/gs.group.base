@@ -22,7 +22,7 @@ In the future the inheritance from ``IGSGroupFolder`` will be removed.
 Base Classes
 ============
 
-For base classes are provided: `GroupPage`_, `GroupForm`_,
+Four base classes are provided: `GroupPage`_, `GroupForm`_,
 `GroupContentProvider`_, and `GroupViewlet`_.
 
 ``GroupPage``
