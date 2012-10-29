@@ -1,17 +1,14 @@
 # coding=utf-8
+from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from gs.content.form.form import SiteForm
 
+
 class GroupForm(SiteForm):
     def __init__(self, context, request):
-        SiteForm.__init__(self, context, request)
-        self.__groupInfo = None
+        super(GroupForm, self).__init__(context, request)
 
-    #TODO Use the zope.cachedescriptors.properties.Lazy decoration
-    @property
+    @Lazy
     def groupInfo(self):
-        if self.__groupInfo == None:
-            self.__groupInfo = \
-                createObject('groupserver.GroupInfo', self.context)
-        return self.__groupInfo
-
+        retval = createObject('groupserver.GroupInfo', self.context)
+        return retval
