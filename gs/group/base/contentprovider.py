@@ -32,7 +32,6 @@ class GroupContentProvider(SiteContentProvider):
 
     @Lazy
     def isAnnouncement(self):
-        # FIXME: Find anything that uses this property and make it use
-        # gs.group.type.announcement
+        # FIXME: Deprecate
         template = self.groupInfo.get_property('group_template')
         return template == 'announcement'
