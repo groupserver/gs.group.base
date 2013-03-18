@@ -32,6 +32,7 @@ setup(name='gs.group.base',
     zip_safe=False,
     install_requires=[
         'setuptools',
+        'zope.app.content',
         'zope.cachedescriptors',
         'zope.component',
         'zope.interface',
