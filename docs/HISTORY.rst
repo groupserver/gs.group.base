@@ -4,7 +4,7 @@ Changelog
 2.1.1 (2015-01-29)
 ------------------
 
-* Warn when the ``messages`` folder is missing
+* Raise a nice error when the ``messages`` folder is missing
 
 2.1.0 (2014-06-11)
 ------------------

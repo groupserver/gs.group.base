@@ -13,8 +13,6 @@
 #
 ############################################################################
 from __future__ import unicode_literals, absolute_import
-from logging import getLogger
-log = getLogger('gs.group.base.contentprovider')
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from AccessControl import getSecurityManager
@@ -41,15 +39,15 @@ class GroupContentProvider(SiteContentProvider):
         #   much of an issue.)
         #
         # TODO: Figure out I could do this better.
-        retval = False
-        if hasattr(self.contex, 'messages'):
+        try:
             msgs = self.context.messages
-            user = getSecurityManager().getUser()
-            retval = bool(user.has_permission('View', msgs))
-        else:
+        except AttributeError:
             m = 'The group {0} {1} lacks a "messages" object.'
             msg = m.format(self.groupInfo.name, self.groupInfo.id)
-            log.warn(msg)
+            raise AttributeError(msg)
+        else:
+            user = getSecurityManager().getUser()
+            retval = bool(user.has_permission('View', msgs))
         return retval
 
     @Lazy
