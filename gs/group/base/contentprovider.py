@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
-# Copyright © 2013 OnlineGroups.net and Contributors.
+# Copyright © 2013, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,7 +11,10 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
+from __future__ import unicode_literals, absolute_import
+from logging import getLogger
+log = getLogger('gs.group.base.contentprovider')
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from AccessControl import getSecurityManager
@@ -38,9 +41,15 @@ class GroupContentProvider(SiteContentProvider):
         #   much of an issue.)
         #
         # TODO: Figure out I could do this better.
-        msgs = self.context.messages
-        user = getSecurityManager().getUser()
-        retval = bool(user.has_permission('View', msgs))
+        retval = False
+        if hasattr(self.contex, 'messages'):
+            msgs = self.context.messages
+            user = getSecurityManager().getUser()
+            retval = bool(user.has_permission('View', msgs))
+        else:
+            m = 'The group {0} {1} lacks a "messages" object.'
+            msg = m.format(self.groupInfo.name, self.groupInfo.id)
+            log.warn(msg)
         return retval
 
     @Lazy
